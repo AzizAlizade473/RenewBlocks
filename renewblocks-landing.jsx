@@ -1,575 +1,605 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { 
+  Menu, X, ArrowRight, Weight, Thermometer, Droplets, Flame, 
+  Recycle, FlaskConical, Factory, Cloud, ShieldCheck, Mail, ChevronRight, CheckCircle2
+} from 'lucide-react';
 
-const NAV_LINKS = ["Problem", "Solution", "Specs", "Standards", "Team"];
+// --- Design System Colors ---
+const colors = {
+  gray: '#2D3748',    // Concrete Gray
+  emerald: '#1B4332', // Eco Emerald
+  white: '#F7FAFC',   // Mineral White
+};
 
-function useInView(threshold = 0.15) {
+// --- Helper Components ---
+
+// Animated Counter for the Impact Section
+const AnimatedCounter = ({ end, suffix = "", duration = 2 }) => {
+  const [count, setCount] = useState(0);
   const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold });
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, inView];
-}
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-function FadeIn({ children, delay = 0, className = "" }) {
-  const [ref, inView] = useInView();
+  useEffect(() => {
+    if (isInView) {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / (duration * 1000), 1);
+        // Easing function: easeOutExpo
+        const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+        setCount(Math.floor(easeProgress * end));
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+  }, [isInView, end, duration]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
+
+// Fade In Up Animation Wrapper
+const FadeInUp = ({ children, delay = 0, className = "" }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
   return (
-    <div ref={ref} className={className} style={{
-      opacity: inView ? 1 : 0,
-      transform: inView ? "translateY(0)" : "translateY(28px)",
-      transition: `opacity 0.7s ease ${delay}s, transform 0.7s ease ${delay}s`
-    }}>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
+      className={className}
+    >
       {children}
-    </div>
+    </motion.div>
   );
-}
+};
 
-const PROBLEMS = [
-  {
-    label: "Construction",
-    stat: "2100 kg/m³",
-    desc: "Traditional limestone blocks force developers to overspend on steel foundations, adding structural costs to every floor.",
-  },
-  {
-    label: "Energy",
-    stat: "High Heat Loss",
-    desc: "Stone transfers heat with no resistance. Residents absorb elevated heating and cooling bills through every wall.",
-  },
-  {
-    label: "Waste",
-    stat: "Unmanaged",
-    desc: "Quarry dust, silica fume, and plastic waste accumulate across the Absheron Peninsula with no industrial outlet.",
-  },
-];
+// --- Main Sections ---
 
-const FEATURES = [
-  {
-    num: "01",
-    title: "50% Lighter",
-    body: "At ~1150 kg/m³, RenewBlocks halves the dead load on structural systems — reducing seismic force exposure and enabling leaner, cheaper foundations.",
-  },
-  {
-    num: "02",
-    title: "Thermal Shield",
-    body: "A thermal conductivity of 0.42 W/mK — 50% better insulation than conventional concrete — cuts heating and cooling costs for residents.",
-  },
-  {
-    num: "03",
-    title: "Carbon Mineralized",
-    body: "Injected CO₂ reacts with calcium hydroxide to form calcite in 24 hours. What was pollution becomes the structural mineral matrix.",
-  },
-  {
-    num: "04",
-    title: "The Nano-Matrix",
-    body: "Silica fume packs microscopic gaps around plastic flakes, creating a mechanically locked, waterproof, salt-resistant composite with self-healing properties.",
-  },
-];
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-const COMPARISON = [
-  { metric: "Weight", renewblocks: "~12 kg (Low)", kubik: "28 kg (Very High)", better: true },
-  { metric: "Installation Speed", renewblocks: "Fast (Flat Surface)", kubik: "Slow (Irregular)", better: true },
-  { metric: "Thermal Insulation", renewblocks: "High (0.42 W/mK)", kubik: "Very Low", better: true },
-  { metric: "Water Resistance", renewblocks: "High (Hydrophobic)", kubik: "Low (Absorbs)", better: true },
-  { metric: "Earthquake Resistance", renewblocks: "High", kubik: "Low", better: true },
-  { metric: "Mortar Required", renewblocks: "Up to 70% Less", kubik: "Standard (High)", better: true },
-  { metric: "Self-Healing", renewblocks: "Yes", kubik: "No", better: true },
-  { metric: "Unit Price", renewblocks: "0.85 ₼", kubik: "0.70 ₼", better: false },
-];
+  const navLinks = [
+    { name: 'Technology', href: '#technology' },
+    { name: 'Specs', href: '#specs' },
+    { name: 'Impact', href: '#impact' },
+    { name: 'Contact', href: '#contact' },
+  ];
 
-const STANDARDS = [
-  { code: "ASTM C129", desc: "Strength Standard for Non-Load Bearing Concrete Masonry Units", val: "≥ 4.14 MPa required · RenewBlocks: 5–6 MPa" },
-  { code: "ASTM C1113", desc: "Thermal Conductivity Standard", val: "Measured at 0.42 W/mK" },
-  { code: "EN 13501-1", desc: "European Fire Safety Classification", val: "Met when covered with gypsum plaster" },
-  { code: "AZS 418-2010", desc: "Azerbaijan State Standard — Grade M50 for Partition Walls", val: "Regional compliance confirmed" },
-];
+  return (
+    <nav className="fixed w-full z-50 transition-all duration-300 bg-[#F7FAFC] border-b border-[#2D3748]/10 shadow-sm font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-20 items-center">
+          <div className="flex-shrink-0 flex items-center cursor-pointer">
+            <div className="w-8 h-8 bg-[#1B4332] mr-2 flex items-center justify-center">
+              <div className="w-4 h-4 bg-[#F7FAFC]" />
+            </div>
+            <span className="font-bold text-[#2D3748] text-2xl tracking-tight">Renew<span className="text-[#1B4332]">Blocks</span></span>
+          </div>
+          
+          {/* Desktop Nav */}
+          <div className="hidden md:flex space-x-8 items-center">
+            {navLinks.map((link) => (
+              <a key={link.name} href={link.href} className="text-[#2D3748] hover:text-[#1B4332] font-medium text-sm tracking-wide transition-colors">
+                {link.name}
+              </a>
+            ))}
+            <a href="#contact" className="px-5 py-2.5 bg-[#1B4332] text-[#F7FAFC] font-medium text-sm hover:bg-[#122e22] transition-colors rounded-sm">
+              Partner With Us
+            </a>
+          </div>
 
-export default function App() {
-  const [navScrolled, setNavScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button onClick={() => setIsOpen(!isOpen)} className="text-[#2D3748] focus:outline-none">
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
+        </div>
+      </div>
 
-  useEffect(() => {
-    const handler = () => setNavScrolled(window.scrollY > 60);
-    window.addEventListener("scroll", handler);
-    return () => window.removeEventListener("scroll", handler);
-  }, []);
+      {/* Mobile Nav */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden bg-[#F7FAFC] border-b border-[#2D3748]/10 overflow-hidden"
+          >
+            <div className="px-2 pt-2 pb-6 space-y-1 sm:px-3 flex flex-col items-center">
+              {navLinks.map((link) => (
+                <a 
+                  key={link.name} 
+                  href={link.href} 
+                  onClick={() => setIsOpen(false)}
+                  className="block px-3 py-3 text-[#2D3748] font-medium w-full text-center hover:bg-[#2D3748]/5"
+                >
+                  {link.name}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </nav>
+  );
+};
 
-  const scrollTo = (id) => {
-    setMenuOpen(false);
-    document.getElementById(id.toLowerCase())?.scrollIntoView({ behavior: "smooth" });
+const Hero = () => {
+  return (
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#2D3748] text-[#F7FAFC]">
+      {/* Abstract Background Element */}
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-[#1B4332]/20 transform skew-x-12 translate-x-32" />
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+          >
+            <div className="inline-flex items-center px-3 py-1 bg-[#1B4332] text-sm font-semibold tracking-wider text-[#F7FAFC] rounded-sm mb-6 uppercase">
+              Advanced Materials Startup • Baku
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] mb-6">
+              Transforming Industrial Waste into the <span className="text-[#1B4332] bg-[#F7FAFC] px-2 leading-tight block sm:inline-block mt-2 sm:mt-0">Carbon-Negative</span> Skeleton of Future Cities.
+            </h1>
+            <p className="text-lg sm:text-xl text-[#F7FAFC]/80 mb-10 leading-relaxed font-light max-w-2xl">
+              Advanced composite masonry units for high-rise partition walls. 50% lighter than natural stone, superior thermal insulation, and cured with industrial CO₂.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4">
+              <a href="#specs" className="inline-flex justify-center items-center px-8 py-4 bg-[#1B4332] hover:bg-[#122e22] text-[#F7FAFC] font-semibold text-lg transition-all rounded-sm group">
+                Request Technical Specs
+                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" size={20} />
+              </a>
+              <a href="#technology" className="inline-flex justify-center items-center px-8 py-4 bg-transparent border-2 border-[#F7FAFC] hover:bg-[#F7FAFC] hover:text-[#2D3748] text-[#F7FAFC] font-semibold text-lg transition-all rounded-sm">
+                Learn the Science
+              </a>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ProblemSolution = () => {
+  return (
+    <section className="py-20 bg-[#F7FAFC]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-[#2D3748] tracking-tight mb-4">The Dead Load Crisis vs. The Smart Matrix</h2>
+          <p className="text-[#2D3748]/70 max-w-2xl mx-auto text-lg">Why traditional masonry is holding back modern high-rise development.</p>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left: The Old Way */}
+          <FadeInUp delay={0.1}>
+            <div className="bg-[#2D3748] p-10 h-full border border-[#2D3748] flex flex-col justify-between">
+              <div>
+                <div className="text-red-400 font-bold tracking-widest uppercase text-sm mb-4 border-b border-red-400/30 pb-2 inline-block">The Old Way</div>
+                <h3 className="text-3xl font-bold text-[#F7FAFC] mb-6">Heavy Natural Limestone ("Kubik")</h3>
+                <ul className="space-y-6">
+                  <li className="flex items-start">
+                    <X className="text-red-400 mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">Massive Dead Load</p>
+                      <p className="text-[#F7FAFC]/70 mt-1">Weighing 2,300 kg/m³, requiring over-engineered, expensive steel and concrete foundations.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <X className="text-red-400 mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">Thermal Bridging</p>
+                      <p className="text-[#F7FAFC]/70 mt-1">Poor insulation forces reliance on artificial heating and cooling systems.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <X className="text-red-400 mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">Salt Efflorescence</p>
+                      <p className="text-[#F7FAFC]/70 mt-1">Prone to structural and aesthetic degradation ("shoran") over time.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </FadeInUp>
+
+          {/* Right: RenewBlocks */}
+          <FadeInUp delay={0.3}>
+            <div className="bg-[#1B4332] p-10 h-full border border-[#1B4332] shadow-2xl flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute -right-10 -bottom-10 opacity-10">
+                <ShieldCheck size={250} />
+              </div>
+              <div className="relative z-10">
+                <div className="text-[#F7FAFC] font-bold tracking-widest uppercase text-sm mb-4 border-b border-[#F7FAFC]/30 pb-2 inline-block">RenewBlocks</div>
+                <h3 className="text-3xl font-bold text-[#F7FAFC] mb-6">The Smart Matrix</h3>
+                <ul className="space-y-6">
+                  <li className="flex items-start">
+                    <CheckCircle2 className="text-[#F7FAFC] mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">50% Lighter</p>
+                      <p className="text-[#F7FAFC]/80 mt-1">Carbon-mineralized core drastically reduces structural requirements and logistics costs.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="text-[#F7FAFC] mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">Doubled Thermal Efficiency</p>
+                      <p className="text-[#F7FAFC]/80 mt-1">Engineered porosity limits thermal transmittance, cutting HVAC operational loads.</p>
+                    </div>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle2 className="text-[#F7FAFC] mr-3 mt-1 flex-shrink-0" size={24} />
+                    <div>
+                      <p className="font-bold text-[#F7FAFC] text-lg">Hydrophobic Integrity</p>
+                      <p className="text-[#F7FAFC]/80 mt-1">Prevents salt efflorescence and moisture ingress completely.</p>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </FadeInUp>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const TechSpecs = () => {
+  const specs = [
+    { name: 'Compressive Strength', icon: <Factory size={20} />, target: '5.1 MPa', desc: 'Exceeds ASTM C129 standards for non-loadbearing masonry.' },
+    { name: 'Density', icon: <Weight size={20} />, target: '~1,347 kg/m³', desc: 'Significant 50% reduction vs 2,300 kg/m³ natural stone.' },
+    { name: 'Thermal Conductivity', icon: <Thermometer size={20} />, target: '~0.42 W/mK', desc: '50% lower thermal transmittance than dense concrete.' },
+    { name: 'Water Absorption', icon: <Droplets size={20} />, target: '< 5%', desc: 'Hydrophobic matrix ensures superior moisture resistance.' },
+    { name: 'Fire Safety', icon: <Flame size={20} />, target: 'Class B', desc: 'Requires standard gypsum finish for commercial compliance.' },
+  ];
+
+  return (
+    <section id="specs" className="py-24 bg-[#F7FAFC] border-t border-[#2D3748]/10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeInUp>
+          <div className="mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] tracking-tight mb-4">Technical Specifications</h2>
+            <p className="text-[#2D3748]/70 text-lg">Engineered for modern high-rise partition walls, thoroughly tested against global construction standards.</p>
+          </div>
+
+          <div className="overflow-x-auto rounded-sm border border-[#2D3748] shadow-sm bg-white">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-[#2D3748] text-[#F7FAFC]">
+                  <th className="py-5 px-6 font-semibold tracking-wide border-b border-[#2D3748] uppercase text-sm">Parameter</th>
+                  <th className="py-5 px-6 font-semibold tracking-wide border-b border-[#2D3748] uppercase text-sm">Target Performance</th>
+                  <th className="py-5 px-6 font-semibold tracking-wide border-b border-[#2D3748] uppercase text-sm hidden md:table-cell">Notes</th>
+                </tr>
+              </thead>
+              <tbody className="text-[#2D3748]">
+                {specs.map((spec, index) => (
+                  <tr key={index} className={`border-b border-[#2D3748]/10 hover:bg-[#F7FAFC] transition-colors ${index % 2 !== 0 ? 'bg-gray-50' : 'bg-white'}`}>
+                    <td className="py-4 px-6 font-medium flex items-center gap-3">
+                      <span className="text-[#1B4332]">{spec.icon}</span>
+                      {spec.name}
+                    </td>
+                    <td className="py-4 px-6 font-bold text-[#1B4332] whitespace-nowrap">{spec.target}</td>
+                    <td className="py-4 px-6 text-sm text-[#2D3748]/80 hidden md:table-cell">{spec.desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </FadeInUp>
+      </div>
+    </section>
+  );
+};
+
+const Technology = () => {
+  const steps = [
+    {
+      num: '01',
+      title: 'Upcycling',
+      desc: 'Reclaiming industrial limestone fines and post-consumer polymeric waste.',
+      icon: <Recycle size={32} />
+    },
+    {
+      num: '02',
+      title: 'Proprietary Matrix',
+      desc: 'Blending with Proprietary Pozzolanic Densifiers (PPD) & Hygroscopic Micro-Fibers (HMF).',
+      icon: <FlaskConical size={32} />
+    },
+    {
+      num: '03',
+      title: 'Vibro-Compression',
+      desc: 'Zero-slump hydraulic pressing forms the high-density architectural skeleton.',
+      icon: <Factory size={32} />
+    },
+    {
+      num: '04',
+      title: 'Carbon Mineralization',
+      desc: '24-hour sealed curing using injected industrial CO₂, locking carbon into rock forever.',
+      icon: <Cloud size={32} />
+    }
+  ];
+
+  return (
+    <section id="technology" className="py-24 bg-[#2D3748] text-[#F7FAFC]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4">The Science of Mineralization</h2>
+          <p className="text-[#F7FAFC]/70 max-w-2xl mx-auto text-lg mb-8">A four-step industrial process that turns waste and emissions into structural assets.</p>
+          
+          <div className="inline-block bg-[#1B4332] p-4 rounded-sm border border-[#1B4332]/50 shadow-lg">
+            <span className="text-sm uppercase tracking-wider text-[#F7FAFC]/70 block mb-2 font-semibold">Core Chemical Reaction</span>
+            <code className="text-xl md:text-2xl font-mono text-[#F7FAFC]">Ca(OH)₂ + CO₂ &rarr; CaCO₃ + H₂O</code>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+          {/* Connecting line for desktop */}
+          <div className="hidden lg:block absolute top-12 left-0 w-full h-[2px] bg-[#F7FAFC]/10 z-0"></div>
+
+          {steps.map((step, idx) => (
+            <FadeInUp key={idx} delay={idx * 0.1} className="relative z-10">
+              <div className="bg-[#2D3748] border border-[#F7FAFC]/20 p-8 h-full rounded-sm hover:border-[#1B4332] hover:bg-[#F7FAFC]/5 transition-all">
+                <div className="w-16 h-16 bg-[#F7FAFC] text-[#2D3748] rounded-full flex items-center justify-center mb-6 shadow-lg border-4 border-[#2D3748]">
+                  {step.icon}
+                </div>
+                <div className="text-[#1B4332] font-bold text-4xl opacity-50 absolute top-6 right-6 font-mono">
+                  {step.num}
+                </div>
+                <h3 className="text-xl font-bold mb-3">{step.title}</h3>
+                <p className="text-[#F7FAFC]/70 text-sm leading-relaxed">{step.desc}</p>
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ImpactCounters = () => {
+  return (
+    <section id="impact" className="py-20 bg-[#1B4332] text-[#F7FAFC]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-3 gap-12 text-center">
+          <FadeInUp delay={0.1}>
+            <div className="flex flex-col items-center">
+              <div className="text-5xl md:text-7xl font-extrabold mb-4 font-mono">
+                <AnimatedCounter end={150} suffix="+" />
+              </div>
+              <div className="text-lg font-medium text-[#F7FAFC]/90">kg CO₂ Mineralized</div>
+              <div className="text-sm text-[#F7FAFC]/60 mt-2">Per 1,000 blocks produced</div>
+            </div>
+          </FadeInUp>
+          
+          <FadeInUp delay={0.2}>
+            <div className="flex flex-col items-center">
+              <div className="text-5xl md:text-7xl font-extrabold mb-4 font-mono">
+                <AnimatedCounter end={120} />
+              </div>
+              <div className="text-lg font-medium text-[#F7FAFC]/90">Tons Polymer Waste</div>
+              <div className="text-sm text-[#F7FAFC]/60 mt-2">Diverted annually per pilot line</div>
+            </div>
+          </FadeInUp>
+          
+          <FadeInUp delay={0.3}>
+            <div className="flex flex-col items-center">
+              <div className="text-5xl md:text-7xl font-extrabold mb-4 font-mono">
+                <AnimatedCounter end={30} suffix="%" />
+              </div>
+              <div className="text-lg font-medium text-[#F7FAFC]/90">Total Wall Cost Reduction</div>
+              <div className="text-sm text-[#F7FAFC]/60 mt-2">Savings for developers vs traditional</div>
+            </div>
+          </FadeInUp>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const Team = () => {
+  const team = [
+    { name: 'Ziyad Shiraliyev', role: 'CEO / Founder', desc: 'Materials science lead driving the proprietary mix design and strategic vision.' },
+    { name: 'Farid Valimammadov', role: 'COO', desc: 'Operations and supply chain integration expert for industrial scaling.' },
+    { name: 'Rima Guliyeva', role: 'Academic Supervisor', desc: 'Senior researcher ensuring strict compliance with mechanical standards.' },
+  ];
+
+  return (
+    <section className="py-24 bg-[#F7FAFC]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <FadeInUp>
+          <div className="mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2D3748] tracking-tight mb-4">Engineered in Azerbaijan</h2>
+            <p className="text-[#2D3748]/70 text-lg">Developed by engineering experts at Baku Higher Oil School (SOCAR).</p>
+          </div>
+        </FadeInUp>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {team.map((member, idx) => (
+            <FadeInUp key={idx} delay={idx * 0.1}>
+              <div className="bg-white p-8 border border-[#2D3748]/10 hover:border-[#1B4332] hover:shadow-lg transition-all rounded-sm group text-left h-full">
+                <div className="w-16 h-16 bg-[#2D3748] rounded-sm mb-6 flex items-center justify-center text-[#F7FAFC]">
+                  <span className="font-bold text-xl">{member.name.charAt(0)}</span>
+                </div>
+                <h3 className="text-xl font-bold text-[#2D3748] mb-1">{member.name}</h3>
+                <p className="text-[#1B4332] font-semibold text-sm uppercase tracking-wide mb-4">{member.role}</p>
+                <p className="text-[#2D3748]/70 text-sm">{member.desc}</p>
+              </div>
+            </FadeInUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+const ContactForm = () => {
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+
+  // Simulated Next.js API Route Handler
+  // In a real Next.js environment, this would call fetch('/api/contact', { ... })
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('loading');
+    
+    // Simulate network latency & backend processing
+    setTimeout(() => {
+      setStatus('success');
+      e.target.reset();
+      
+      // Reset success message after 5 seconds
+      setTimeout(() => {
+        setStatus('idle');
+      }, 5000);
+    }, 1500);
   };
 
   return (
-    <div style={{ fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", background: "#F5F4F0", color: "#1C1C1C" }}>
-      {/* Google Fonts */}
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
-
-      {/* NAV */}
-      <nav style={{
-        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
-        background: navScrolled ? "rgba(245,244,240,0.97)" : "transparent",
-        borderBottom: navScrolled ? "1px solid #D5D3CC" : "1px solid transparent",
-        transition: "all 0.3s ease",
-        backdropFilter: navScrolled ? "blur(8px)" : "none",
-      }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 32px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 68 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 28, height: 28, background: "#2D5A27", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, padding: 4 }}>
-              {[0,1,2,3].map(i => <div key={i} style={{ background: "#F5F4F0", opacity: i % 2 === 0 ? 1 : 0.5 }} />)}
-            </div>
-            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 20, letterSpacing: "-0.5px", color: "#1C1C1C" }}>RenewBlocks</span>
-          </div>
-          <div style={{ display: "flex", gap: 36, alignItems: "center" }}>
-            {NAV_LINKS.map(l => (
-              <button key={l} onClick={() => scrollTo(l)} style={{
-                background: "none", border: "none", cursor: "pointer",
-                fontSize: 13, fontWeight: 500, letterSpacing: "0.08em",
-                textTransform: "uppercase", color: "#3D3D3A",
-                padding: 0, transition: "color 0.2s"
-              }}
-                onMouseEnter={e => e.target.style.color = "#2D5A27"}
-                onMouseLeave={e => e.target.style.color = "#3D3D3A"}
-              >{l}</button>
-            ))}
-            <button onClick={() => scrollTo("team")} style={{
-              background: "#2D5A27", color: "#F5F4F0", border: "none",
-              padding: "10px 22px", fontSize: 13, fontWeight: 600,
-              letterSpacing: "0.06em", textTransform: "uppercase", cursor: "pointer",
-              transition: "background 0.2s"
-            }}
-              onMouseEnter={e => e.target.style.background = "#1e3d1b"}
-              onMouseLeave={e => e.target.style.background = "#2D5A27"}
-            >Contact</button>
-          </div>
-        </div>
-      </nav>
-
-      {/* HERO */}
-      <section style={{
-        minHeight: "100vh", display: "flex", alignItems: "center",
-        background: "#1C1C1C",
-        borderBottom: "4px solid #2D5A27",
-        position: "relative", overflow: "hidden",
-        paddingTop: 68
-      }}>
-        {/* Grid texture */}
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
-          backgroundSize: "60px 60px"
-        }} />
-        {/* Right accent bar */}
-        <div style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 4, background: "#2D5A27" }} />
-
-        <div style={{ maxWidth: 1200, margin: "0 auto", padding: "80px 32px", position: "relative", zIndex: 1 }}>
-          <div style={{ maxWidth: 820 }}>
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              background: "rgba(45,90,39,0.2)", border: "1px solid rgba(45,90,39,0.5)",
-              padding: "6px 16px", marginBottom: 40
-            }}>
-              <div style={{ width: 6, height: 6, background: "#4A9F42", borderRadius: "50%" }} />
-              <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "#7BC67A" }}>
-                Baku Higher Oil School — SOCAR
-              </span>
-            </div>
-
-            <h1 style={{
-              fontFamily: "'DM Serif Display', serif",
-              fontSize: "clamp(40px, 6vw, 80px)",
-              lineHeight: 1.08, fontWeight: 400,
-              color: "#F5F4F0", margin: "0 0 32px",
-              letterSpacing: "-1.5px"
-            }}>
-              Transforming Industrial<br />
-              Waste into the<br />
-              <span style={{ color: "#4A9F42", fontStyle: "italic" }}>Carbon-Negative</span><br />
-              Skeleton of Future Cities.
-            </h1>
-
-            <p style={{ fontSize: 18, color: "#9C9A94", lineHeight: 1.7, maxWidth: 580, margin: "0 0 48px", fontWeight: 300 }}>
-              A lightweight, highly insulative composite masonry unit made from local waste — limestone dust, silica fume, and shredded plastic — cured in 24 hours with CO₂.
-            </p>
-
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-              <button onClick={() => scrollTo("specs")} style={{
-                background: "#2D5A27", color: "#F5F4F0", border: "none",
-                padding: "16px 36px", fontSize: 14, fontWeight: 600,
-                letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer",
-                transition: "all 0.2s"
-              }}
-                onMouseEnter={e => { e.target.style.background = "#4A9F42"; }}
-                onMouseLeave={e => { e.target.style.background = "#2D5A27"; }}
-              >View Technical Specs</button>
-              <button onClick={() => scrollTo("team")} style={{
-                background: "transparent", color: "#F5F4F0",
-                border: "1px solid rgba(245,244,240,0.25)",
-                padding: "16px 36px", fontSize: 14, fontWeight: 600,
-                letterSpacing: "0.08em", textTransform: "uppercase", cursor: "pointer",
-                transition: "all 0.2s"
-              }}
-                onMouseEnter={e => { e.target.style.borderColor = "rgba(245,244,240,0.7)"; }}
-                onMouseLeave={e => { e.target.style.borderColor = "rgba(245,244,240,0.25)"; }}
-              >Contact Us</button>
-            </div>
-          </div>
-
-          {/* Stats row */}
-          <div style={{
-            display: "grid", gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 0, borderTop: "1px solid rgba(255,255,255,0.1)",
-            marginTop: 80, paddingTop: 40
-          }}>
-            {[
-              { val: "1150 kg/m³", label: "Block Density (vs 2100 natural stone)" },
-              { val: "0.42 W/mK", label: "Thermal Conductivity" },
-              { val: "24 hrs", label: "CO₂ Cure Time (vs 28 days concrete)" },
-            ].map((s, i) => (
-              <div key={i} style={{ padding: "0 32px 0 0", borderRight: i < 2 ? "1px solid rgba(255,255,255,0.1)" : "none", paddingLeft: i > 0 ? 32 : 0 }}>
-                <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 40, color: "#4A9F42", letterSpacing: "-1px" }}>{s.val}</div>
-                <div style={{ fontSize: 12, color: "#6B6966", textTransform: "uppercase", letterSpacing: "0.1em", marginTop: 4 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* PROBLEM */}
-      <section id="problem" style={{ padding: "100px 32px", background: "#F5F4F0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 20, marginBottom: 64, borderBottom: "1px solid #D5D3CC", paddingBottom: 32 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#2D5A27" }}>01 / Problem</span>
-              <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(32px, 4vw, 52px)", margin: 0, letterSpacing: "-0.5px" }}>
-                The "Dead Loss" Crisis
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
-            {PROBLEMS.map((p, i) => (
-              <FadeIn key={i} delay={i * 0.12}>
-                <div style={{
-                  borderLeft: i === 0 ? "1px solid #D5D3CC" : "none",
-                  borderRight: "1px solid #D5D3CC",
-                  borderTop: "1px solid #D5D3CC",
-                  borderBottom: "1px solid #D5D3CC",
-                  padding: "40px 36px",
-                  marginLeft: i === 0 ? 0 : -1
-                }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#8A8884", marginBottom: 20 }}>{p.label}</div>
-                  <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 36, color: "#C1392B", marginBottom: 20, letterSpacing: "-0.5px" }}>{p.stat}</div>
-                  <div style={{ borderTop: "2px solid #1C1C1C", paddingTop: 20 }}>
-                    <p style={{ fontSize: 15, lineHeight: 1.75, color: "#4A4845", margin: 0, fontWeight: 300 }}>{p.desc}</p>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* SOLUTION */}
-      <section id="solution" style={{ padding: "100px 32px", background: "#222220" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 20, marginBottom: 80, borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: 32 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#4A9F42" }}>02 / Solution</span>
-              <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(32px, 4vw, 52px)", margin: 0, color: "#F5F4F0", letterSpacing: "-0.5px" }}>
-                Why RenewBlocks
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,0.07)" }}>
-            {FEATURES.map((f, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div style={{
-                  background: "#222220", padding: "48px 44px",
-                  transition: "background 0.3s",
-                  cursor: "default"
-                }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#2a2a27"}
-                  onMouseLeave={e => e.currentTarget.style.background = "#222220"}
-                >
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 28 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", color: "#4A9F42" }}>{f.num}</span>
-                    <div style={{ width: 32, height: 2, background: "#4A9F42", marginTop: 7 }} />
-                  </div>
-                  <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 28, color: "#F5F4F0", margin: "0 0 16px", letterSpacing: "-0.3px" }}>{f.title}</h3>
-                  <p style={{ fontSize: 15, lineHeight: 1.75, color: "#8A8884", margin: 0, fontWeight: 300 }}>{f.body}</p>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-
-          {/* Process strip */}
-          <FadeIn delay={0.3}>
-            <div style={{ marginTop: 60, background: "#2D5A27", padding: "32px 44px", display: "flex", alignItems: "center", gap: 0 }}>
-              {["Collect Industrial Waste", "Shred & Mix", "Press & Vibrate", "CO₂ Cure (24 hrs)", "Certified Masonry Unit"].map((step, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", flex: 1 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(245,244,240,0.5)", marginBottom: 4 }}>Step {i + 1}</div>
-                    <div style={{ fontSize: 13, fontWeight: 500, color: "#F5F4F0" }}>{step}</div>
-                  </div>
-                  {i < 4 && <div style={{ width: 24, textAlign: "center", color: "rgba(245,244,240,0.4)", fontSize: 18, flexShrink: 0 }}>›</div>}
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* SPECS / COMPARISON */}
-      <section id="specs" style={{ padding: "100px 32px", background: "#F5F4F0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 20, marginBottom: 64, borderBottom: "1px solid #D5D3CC", paddingBottom: 32 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#2D5A27" }}>03 / Technical Specs</span>
-              <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(32px, 4vw, 52px)", margin: 0, letterSpacing: "-0.5px" }}>
-                Market Comparison
-              </h2>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.1}>
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <thead>
-                  <tr>
-                    <th style={{ textAlign: "left", padding: "14px 20px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A8884", borderBottom: "2px solid #1C1C1C" }}>Metric</th>
-                    <th style={{ textAlign: "left", padding: "14px 20px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#2D5A27", borderBottom: "2px solid #2D5A27", background: "rgba(45,90,39,0.04)" }}>RenewBlocks</th>
-                    <th style={{ textAlign: "left", padding: "14px 20px", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "#8A8884", borderBottom: "2px solid #D5D3CC" }}>Kubik (Natural Stone)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {COMPARISON.map((row, i) => (
-                    <tr key={i} style={{ borderBottom: "1px solid #E8E7E2" }}
-                      onMouseEnter={e => e.currentTarget.style.background = "#EEECEA"}
-                      onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                    >
-                      <td style={{ padding: "18px 20px", fontSize: 14, fontWeight: 500, color: "#1C1C1C" }}>{row.metric}</td>
-                      <td style={{ padding: "18px 20px", fontSize: 14, color: "#2D5A27", fontWeight: 600, background: "rgba(45,90,39,0.03)" }}>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                          {row.better && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4A9F42", display: "inline-block" }} />}
-                          {row.renewblocks}
-                        </span>
-                      </td>
-                      <td style={{ padding: "18px 20px", fontSize: 14, color: "#6B6966" }}>{row.kubik}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </FadeIn>
-
-          <FadeIn delay={0.2}>
-            <div style={{ marginTop: 20, padding: "16px 20px", background: "#EEECEA", borderLeft: "3px solid #8A8884" }}>
-              <p style={{ margin: 0, fontSize: 13, color: "#6B6966", fontWeight: 300 }}>
-                <strong style={{ color: "#4A4845" }}>Note:</strong> Unit cost is slightly above natural stone (0.85 ₼ vs 0.70 ₼), however total wall cost is significantly lower when accounting for 70% less mortar, reduced labor time, and lighter foundations.
+    <section id="contact" className="py-24 bg-[#2D3748] text-[#F7FAFC] border-t-8 border-[#1B4332]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          
+          <FadeInUp>
+            <div>
+              <h2 className="text-4xl lg:text-5xl font-bold tracking-tight mb-6">Build the Future with Us.</h2>
+              <p className="text-[#F7FAFC]/70 text-lg mb-8 leading-relaxed">
+                Whether you are a developer looking to cut structural costs, an architect designing for Net Zero, or an investor interested in scalable climate tech, we want to hear from you.
               </p>
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* STANDARDS */}
-      <section id="standards" style={{ padding: "100px 32px", background: "#1C1C1C" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 20, marginBottom: 64, borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: 32 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#4A9F42" }}>04 / Standards</span>
-              <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(32px, 4vw, 52px)", margin: 0, color: "#F5F4F0", letterSpacing: "-0.5px" }}>
-                Certifications &amp; Compliance
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 1, background: "rgba(255,255,255,0.06)" }}>
-            {STANDARDS.map((s, i) => (
-              <FadeIn key={i} delay={i * 0.1}>
-                <div style={{ background: "#1C1C1C", padding: "40px 40px" }}>
-                  <div style={{ display: "flex", alignItems: "flex-start", gap: 20 }}>
-                    <div style={{ minWidth: 3, height: 48, background: "#2D5A27", marginTop: 4 }} />
-                    <div>
-                      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 22, color: "#F5F4F0", marginBottom: 8 }}>{s.code}</div>
-                      <div style={{ fontSize: 14, color: "#8A8884", marginBottom: 12, lineHeight: 1.5 }}>{s.desc}</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: "#4A9F42", letterSpacing: "0.05em", textTransform: "uppercase" }}>{s.val}</div>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-
-          <FadeIn delay={0.3}>
-            <div style={{ marginTop: 60, display: "flex", gap: 40, padding: "40px 0", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-              {[
-                { label: "SDG 11", detail: "Sustainable Cities and Communities" },
-                { label: "SDG 12", detail: "Responsible Consumption and Production" },
-                { label: "Circular Economy", detail: "80% of raw materials from industrial waste" },
-              ].map((b, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  <div style={{ width: 40, height: 40, background: "#2D5A27", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ width: 20, height: 20, border: "2px solid #4A9F42", borderRadius: "50%" }} />
+              
+              <div className="space-y-6">
+                <div className="flex items-center">
+                  <div className="w-12 h-12 bg-[#1B4332] flex items-center justify-center rounded-sm mr-4">
+                    <Mail className="text-[#F7FAFC]" size={20} />
                   </div>
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 700, color: "#F5F4F0" }}>{b.label}</div>
-                    <div style={{ fontSize: 12, color: "#6B6966" }}>{b.detail}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* TEAM + CONTACT */}
-      <section id="team" style={{ padding: "100px 32px", background: "#F5F4F0" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-          <FadeIn>
-            <div style={{ display: "flex", alignItems: "baseline", gap: 20, marginBottom: 64, borderBottom: "1px solid #D5D3CC", paddingBottom: 32 }}>
-              <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.15em", textTransform: "uppercase", color: "#2D5A27" }}>05 / Team</span>
-              <h2 style={{ fontFamily: "'DM Serif Display', serif", fontSize: "clamp(32px, 4vw, 52px)", margin: 0, letterSpacing: "-0.5px" }}>
-                Contact Us
-              </h2>
-            </div>
-          </FadeIn>
-
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60 }}>
-            {/* Team */}
-            <FadeIn>
-              <div>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, margin: "0 0 32px", color: "#1C1C1C" }}>The Founders</h3>
-                <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-                  {[
-                    { name: "Ziyad Shiraliyev", role: "Chief Executive Officer", email: "ziyad.shiraliyev.std@bhos.edu.az", phone: "+994 51 410 2706" },
-                    { name: "Farid Valimammadov", role: "Chief Operating Officer", email: "farid.valimammadov.std@bhos.edu.az" },
-                  ].map((p, i) => (
-                    <div key={i} style={{
-                      padding: "28px 0",
-                      borderBottom: "1px solid #D5D3CC",
-                      borderTop: i === 0 ? "1px solid #D5D3CC" : "none"
-                    }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-                        <div style={{
-                          width: 52, height: 52, background: "#2D5A27",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          fontFamily: "'DM Serif Display', serif", fontSize: 20, color: "#F5F4F0",
-                          flexShrink: 0
-                        }}>
-                          {p.name[0]}
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 16, fontWeight: 600, color: "#1C1C1C", marginBottom: 2 }}>{p.name}</div>
-                          <div style={{ fontSize: 12, color: "#8A8884", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{p.role}</div>
-                          <a href={`mailto:${p.email}`} style={{ fontSize: 13, color: "#2D5A27", textDecoration: "none", display: "block" }}>{p.email}</a>
-                          {p.phone && <div style={{ fontSize: 13, color: "#6B6966", marginTop: 2 }}>{p.phone}</div>}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  <div style={{ padding: "20px 0 0" }}>
-                    <div style={{ fontSize: 12, color: "#8A8884", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>Institution</div>
-                    <div style={{ fontSize: 15, fontWeight: 500, color: "#1C1C1C" }}>Baku Higher Oil School (SOCAR)</div>
-                    <div style={{ fontSize: 14, color: "#6B6966" }}>Baku, Azerbaijan</div>
+                    <p className="text-sm text-[#F7FAFC]/50 uppercase tracking-wider font-semibold">Direct Inquiries</p>
+                    <p className="text-lg font-medium">partners@renewblocks.az</p>
                   </div>
                 </div>
               </div>
-            </FadeIn>
-
-            {/* Contact form */}
-            <FadeIn delay={0.15}>
-              <div>
-                <h3 style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, margin: "0 0 32px", color: "#1C1C1C" }}>Send a Message</h3>
-                <ContactForm />
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{ background: "#111110", padding: "28px 32px", borderTop: "1px solid #2a2a27" }}>
-        <div style={{ maxWidth: 1200, margin: "0 auto", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 20, height: 20, background: "#2D5A27", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5, padding: 3 }}>
-              {[0,1,2,3].map(i => <div key={i} style={{ background: "#F5F4F0", opacity: i % 2 === 0 ? 1 : 0.4 }} />)}
             </div>
-            <span style={{ fontFamily: "'DM Serif Display', serif", fontSize: 15, color: "#F5F4F0" }}>RenewBlocks</span>
-          </div>
-          <div style={{ fontSize: 12, color: "#4A4845" }}>
-            Carbon-Mineralized Composite Masonry · Baku, Azerbaijan · 2026
-          </div>
-          <div style={{ fontSize: 12, color: "#4A4845" }}>BHOS / SOCAR Research Initiative</div>
+          </FadeInUp>
+
+          <FadeInUp delay={0.2}>
+            <div className="bg-white p-8 sm:p-10 rounded-sm border-2 border-[#1B4332] shadow-[8px_8px_0px_0px_rgba(27,67,50,1)] relative text-[#2D3748]">
+              
+              {status === 'success' ? (
+                <div className="absolute inset-0 bg-white z-10 flex flex-col items-center justify-center p-8 text-center rounded-sm">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="text-[#1B4332] mb-4"
+                  >
+                    <CheckCircle2 size={64} />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-[#2D3748] mb-2">Request Received</h3>
+                  <p className="text-[#2D3748]/70">Our technical team will send the Spec Sheet to your email shortly.</p>
+                </div>
+              ) : null}
+
+              <h3 className="text-2xl font-bold mb-6 text-[#2D3748]">Request Technical Specs</h3>
+              
+              <form onSubmit={handleFormSubmit} className="space-y-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#2D3748] mb-1">Full Name</label>
+                    <input required type="text" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm" placeholder="John Doe" />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#2D3748] mb-1">Corporate Email</label>
+                    <input required type="email" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm" placeholder="john@company.com" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#2D3748] mb-1">Company Name</label>
+                  <input required type="text" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm" placeholder="e.g. SOCAR Development" />
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-[#2D3748] mb-1">Role</label>
+                    <select required defaultValue="" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm appearance-none cursor-pointer">
+                      <option value="" disabled>Select Role</option>
+                      <option>Architect</option>
+                      <option>Structural Engineer</option>
+                      <option>Developer / Builder</option>
+                      <option>Investor</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-[#2D3748] mb-1">Est. Project Size (m²)</label>
+                    <input type="number" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm" placeholder="e.g. 5000" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-[#2D3748] mb-1">Message (Optional)</label>
+                  <textarea rows="3" className="w-full bg-[#F7FAFC] border border-[#2D3748]/20 focus:border-[#1B4332] focus:ring-0 px-4 py-3 outline-none transition-colors rounded-sm resize-none" placeholder="Tell us about your requirements..."></textarea>
+                </div>
+
+                <button 
+                  type="submit" 
+                  disabled={status === 'loading'}
+                  className="w-full bg-[#1B4332] hover:bg-[#122e22] text-[#F7FAFC] font-bold text-lg py-4 transition-colors flex justify-center items-center rounded-sm disabled:opacity-70"
+                >
+                  {status === 'loading' ? (
+                    <motion.div 
+                      animate={{ rotate: 360 }} 
+                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      className="w-6 h-6 border-2 border-[#F7FAFC] border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    "Get Specification Sheet"
+                  )}
+                </button>
+              </form>
+            </div>
+          </FadeInUp>
+
         </div>
-      </footer>
-    </div>
+      </div>
+    </section>
   );
-}
+};
 
-function ContactForm() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [sent, setSent] = useState(false);
-
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-  const handleSubmit = () => {
-    if (!form.name || !form.email || !form.message) return;
-    window.location.href = `mailto:ziyad.shiraliyev.std@bhos.edu.az?subject=Inquiry from ${encodeURIComponent(form.name)}&body=${encodeURIComponent(form.message + "\n\nFrom: " + form.email)}`;
-    setSent(true);
-  };
-
-  const inputStyle = {
-    width: "100%", padding: "14px 16px", fontSize: 14,
-    background: "#EEECEA", border: "1px solid #D5D3CC",
-    outline: "none", color: "#1C1C1C", boxSizing: "border-box",
-    fontFamily: "inherit", transition: "border-color 0.2s"
-  };
-
-  if (sent) return (
-    <div style={{ padding: "48px 40px", background: "#2D5A27", textAlign: "center" }}>
-      <div style={{ fontFamily: "'DM Serif Display', serif", fontSize: 24, color: "#F5F4F0", marginBottom: 8 }}>Message Prepared</div>
-      <div style={{ fontSize: 14, color: "rgba(245,244,240,0.7)" }}>Your email client should open with the message ready to send.</div>
-    </div>
-  );
-
+const Footer = () => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-        <div>
-          <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A8884", marginBottom: 6 }}>Name</label>
-          <input name="name" value={form.name} onChange={handleChange} placeholder="Your name" style={inputStyle}
-            onFocus={e => e.target.style.borderColor = "#2D5A27"}
-            onBlur={e => e.target.style.borderColor = "#D5D3CC"}
-          />
-        </div>
-        <div>
-          <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A8884", marginBottom: 6 }}>Email</label>
-          <input name="email" value={form.email} onChange={handleChange} placeholder="your@email.com" style={inputStyle}
-            onFocus={e => e.target.style.borderColor = "#2D5A27"}
-            onBlur={e => e.target.style.borderColor = "#D5D3CC"}
-          />
+    <footer className="bg-[#2D3748] text-[#F7FAFC]/50 py-8 border-t border-[#F7FAFC]/10 text-sm text-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+        <p>&copy; {new Date().getFullYear()} RenewBlocks. All rights reserved.</p>
+        <div className="mt-4 md:mt-0 flex space-x-6">
+          <a href="#" className="hover:text-[#F7FAFC] transition-colors">Privacy Policy</a>
+          <a href="#" className="hover:text-[#F7FAFC] transition-colors">Terms of Service</a>
+          <span className="text-[#F7FAFC]/30">Baku, Azerbaijan</span>
         </div>
       </div>
-      <div>
-        <label style={{ display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#8A8884", marginBottom: 6 }}>Message</label>
-        <textarea name="message" value={form.message} onChange={handleChange} rows={5} placeholder="Inquiry about RenewBlocks..." style={{ ...inputStyle, resize: "vertical" }}
-          onFocus={e => e.target.style.borderColor = "#2D5A27"}
-          onBlur={e => e.target.style.borderColor = "#D5D3CC"}
-        />
-      </div>
-      <button onClick={handleSubmit} style={{
-        background: "#1C1C1C", color: "#F5F4F0", border: "none",
-        padding: "16px 32px", fontSize: 13, fontWeight: 600,
-        letterSpacing: "0.1em", textTransform: "uppercase", cursor: "pointer",
-        transition: "background 0.2s", alignSelf: "flex-start"
-      }}
-        onMouseEnter={e => e.target.style.background = "#2D5A27"}
-        onMouseLeave={e => e.target.style.background = "#1C1C1C"}
-      >
-        Send Inquiry
-      </button>
+    </footer>
+  );
+};
+
+// --- Main Application Assembly ---
+
+export default function App() {
+  return (
+    <div className="font-sans bg-[#F7FAFC] min-h-screen selection:bg-[#1B4332] selection:text-[#F7FAFC]">
+      <Navbar />
+      <Hero />
+      <ProblemSolution />
+      <TechSpecs />
+      <Technology />
+      <ImpactCounters />
+      <Team />
+      <ContactForm />
+      <Footer />
     </div>
   );
 }
