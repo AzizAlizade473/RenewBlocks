@@ -1,13 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RenewBlocks — Carbon-Negative Masonry</title>
-    <meta name="description" content="RenewBlocks: Lightweight, carbon-mineralized composite masonry units made from industrial waste. Transforming construction in Baku, Azerbaijan." />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RenewBlocks — Partition masonry from three waste streams</title>
+<meta name="description" content="RenewBlocks is a hollow partition block made from shredded plastic, incinerator ash, and limestone dust, cured with CO2 gas instead of water. Built in Baku, piloting in Sumgait.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@400;500;700;800;900&family=Archivo:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="RenewBlocks home">
+      <svg class="brand__mark" viewBox="0 0 120 120" aria-hidden="true">
+        <rect x="0" y="80" width="80" height="40" fill="#1C1C1A"/>
+        <rect x="0" y="0" width="40" height="80" fill="#3D5C35"/>
+        <rect x="40" y="0" width="80" height="40" fill="#C5B89C"/>
+      </svg>
+      <span class="brand__word"><b>RENEW</b>BLOCKS</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Primary">
+      <div class="nav-desktop__links">
+        <a class="navlink" href="index.html" aria-current="page">Home</a>
+        <a class="navlink" href="technology.html">Technology</a>
+        <a class="navlink" href="about.html">About</a>
+        <a class="navlink" href="contact.html">Contact</a>
+      </div>
+      <a class="btn btn--outline" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMobile" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav-mobile" id="navMobile" aria-label="Primary mobile">
+    <a href="index.html" aria-current="page">Home</a>
+    <a href="technology.html">Technology</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero container">
+    <div class="hero__grid">
+      <div>
+        <p class="eyebrow">Partition masonry · Baku, Azerbaijan</p>
+        <h1 class="h-display">A partition block built from what Baku already throws away.</h1>
+        <p class="lede" style="margin-top:20px;">RenewBlocks combines shredded plastic, incinerator ash, and limestone quarry dust with cement into a lightweight, non-load-bearing masonry block — cured with CO2 gas instead of water.</p>
+        <div class="btn-row" style="margin-top:32px;">
+          <a class="btn btn--primary" href="technology.html">See the technology</a>
+          <a class="btn btn--outline" href="contact.html">Talk to us</a>
+        </div>
+        <p class="mono" style="margin-top:28px; font-size:13px; color:var(--cement);">Stage: TRL4 — lab formula validated, full-scale block not yet produced. Pilot site: Sumgait, Azerbaijan.</p>
+      </div>
+      <div>
+        <svg class="diagram" viewBox="0 0 460 300" role="img" aria-labelledby="heroDwgTitle heroDwgDesc" xmlns="http://www.w3.org/2000/svg">
+          <title id="heroDwgTitle">RenewBlocks partition block, front face</title>
+          <desc id="heroDwgDesc">Technical drawing of the block face: 390 by 190 millimeters overall, with two 130 by 120 millimeter through-cores.</desc>
+          <rect x="50" y="46" width="390" height="190" fill="#C5B89C" fill-opacity="0.4" stroke="#1C1C1A" stroke-width="2.5"/>
+          <rect x="93" y="81" width="130" height="120" fill="#F4EFE6" stroke="#1C1C1A" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect x="267" y="81" width="130" height="120" fill="#F4EFE6" stroke="#1C1C1A" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <g stroke="#7A7770" stroke-width="1">
+            <line x1="50" y1="256" x2="440" y2="256"/>
+            <line x1="50" y1="250" x2="50" y2="262"/>
+            <line x1="440" y1="250" x2="440" y2="262"/>
+          </g>
+          <text x="245" y="278" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1C1C1A">390 mm</text>
+          <g stroke="#7A7770" stroke-width="1">
+            <line x1="26" y1="46" x2="26" y2="236"/>
+            <line x1="20" y1="46" x2="32" y2="46"/>
+            <line x1="20" y1="236" x2="32" y2="236"/>
+          </g>
+          <text x="26" y="141" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1C1C1A" transform="rotate(-90 26 141)">190 mm</text>
+          <line x1="158" y1="81" x2="158" y2="24" stroke="#7A7770" stroke-width="1"/>
+          <text x="158" y="16" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#3D5C35">130 × 120 mm core, ×2</text>
+        </svg>
+        <p class="diagram-caption">Front face, hollow CMU — to scale</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATUS STRIP -->
+  <section class="section--dark section--tight reveal">
+    <div class="container">
+      <div class="strip">
+        <div class="strip__item">
+          <span class="num">2nd place</span>
+          <span class="label">7th International Student Research Conference, Baku Higher Oil School — April 2026</span>
+        </div>
+        <div class="strip__divider"></div>
+        <div class="strip__item">
+          <span class="num">AIM YETI</span>
+          <span class="label">Startup development program, 2026</span>
+        </div>
+        <div class="strip__divider"></div>
+        <div class="strip__item">
+          <span class="num">SOCAR Capstone</span>
+          <span class="label">Ongoing capstone project, 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INPUTS -->
+  <section class="section reveal">
+    <div class="container">
+      <p class="eyebrow">Three waste streams</p>
+      <h2 class="h2" style="max-width:20ch;">What goes into a block</h2>
+      <p class="body-text" style="margin-top:16px; color:var(--cement);">Every block starts with material that already exists nearby, with nowhere useful to go.</p>
+
+      <div class="inputs-row" style="margin-top:var(--s6);">
+        <div class="input-card">
+          <div class="material-swatch material-swatch--plastic" aria-hidden="true"></div>
+          <p class="input-card__name">Shredded HDPE/PP plastic</p>
+          <p class="input-card__body">Pre-sorted plastic bales, sorted by resin code and dry-shredded on site.</p>
+        </div>
+        <div class="inputs-plus" aria-hidden="true">+</div>
+        <div class="input-card">
+          <div class="material-swatch material-swatch--ash" aria-hidden="true"></div>
+          <p class="input-card__name">Incinerator bottom ash</p>
+          <p class="input-card__body">Leftover ash from municipal waste-to-energy processing, weathered outdoors before use.</p>
+        </div>
+        <div class="inputs-plus" aria-hidden="true">+</div>
+        <div class="input-card">
+          <div class="material-swatch material-swatch--limestone" aria-hidden="true"></div>
+          <p class="input-card__name">Limestone quarry dust</p>
+          <p class="input-card__body">Fine dust from local limestone quarrying — a byproduct the quarry otherwise pays to dispose of.</p>
+        </div>
+      </div>
+      <p class="body-text" style="margin-top:var(--s4); color:var(--cement); font-size:14.5px;">Combined with cement, a small amount of microsilica, and cellulose pulp, then pressed and cured with CO2 gas. <a href="technology.html" style="text-decoration:underline; color:var(--sage);">See the full process</a>.</p>
+    </div>
+  </section>
+
+  <!-- BY THE NUMBERS -->
+  <section class="section section--panel reveal">
+    <div class="container">
+      <p class="eyebrow">Where the numbers stand</p>
+      <h2 class="h2" style="max-width:22ch;">We label every figure by how sure we are of it.</h2>
+      <p class="body-text" style="margin-top:16px; color:var(--cement);">Some of this is measured in the lab. Some is a target we're still building toward. We don't blur the two — see the full breakdown on the technology page.</p>
+
+      <div class="stat-grid" style="margin-top:var(--s6);">
+        <div class="stat-card">
+          <span class="tag tag--calculated">Calculated</span>
+          <p class="value">~12.3 kg</p>
+          <p class="desc">Target block weight, vs. ~28 kg for a standard stone block. Not yet weighed off the press.</p>
+        </div>
+        <div class="stat-card">
+          <span class="tag tag--measured">Measured</span>
+          <p class="value">9.0 MPa</p>
+          <p class="desc">28-day compressive strength on a solid 160×40×40mm lab specimen — not the full hollow block.</p>
+        </div>
+        <div class="stat-card">
+          <span class="tag tag--target">Target</span>
+          <p class="value">&gt;5.0 MPa</p>
+          <p class="desc">24-hour CO2-cure strength target for the commercial block, net area. Not yet measured.</p>
+        </div>
+        <div class="stat-card">
+          <span class="tag tag--calculated">Calculated</span>
+          <p class="value">~85.8 t</p>
+          <p class="desc">Plastic, ash, and limestone dust diverted per 10,000 blocks. To be confirmed at production scale.</p>
+        </div>
+        <div class="stat-card">
+          <span class="tag tag--calculated">Calculated</span>
+          <p class="value">~3.5 t</p>
+          <p class="desc">CO2 mineralized into solid mineral per 10,000 blocks — a stoichiometric estimate, not yet measured.</p>
+        </div>
+        <div class="stat-card">
+          <span class="tag tag--reference">Reference</span>
+          <p class="value">4.14 MPa</p>
+          <p class="desc">ASTM C129-17 minimum for non-load-bearing block — shown for scale, not a claim of certification.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM TEASER -->
+  <section class="section reveal">
+    <div class="container">
+      <p class="eyebrow">The team</p>
+      <h2 class="h2">Three people, one capstone project.</h2>
+      <div class="grid-3" style="margin-top:var(--s6);">
+        <div class="team-card">
+          <div class="block-avatar" style="background:#1C1C1A; color:#F4EFE6;">ZS</div>
+          <p class="team-card__name">Ziyad Shiraliyev</p>
+          <p class="team-card__role">CEO / Founder</p>
+          <p class="team-card__note">Chemical Engineering, BHOS/SOCAR — formula and R&amp;D.</p>
+        </div>
+        <div class="team-card">
+          <div class="block-avatar" style="background:#3D5C35; color:#F4EFE6;">FV</div>
+          <p class="team-card__name">Farid Valimammadov</p>
+          <p class="team-card__role">COO / Co-founder</p>
+          <p class="team-card__note">Supply chain, logistics, and B2B customer discovery.</p>
+        </div>
+        <div class="team-card">
+          <div class="block-avatar" style="background:#C5B89C; color:#1C1C1A;">RG</div>
+          <p class="team-card__name">Rima Guliyeva</p>
+          <p class="team-card__role">Academic Supervisor</p>
+          <p class="team-card__note">BHOS faculty — methodology and standards guidance.</p>
+        </div>
+      </div>
+      <p style="margin-top:var(--s5);"><a href="about.html" style="text-decoration:underline; color:var(--sage); font-weight:600;">More about the team and the project</a></p>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="section--dark section reveal">
+    <div class="container split">
+      <div>
+        <h2 class="h2">Building toward a pilot in Sumgait.</h2>
+      </div>
+      <div>
+        <p class="lede">We're an early-stage, BHOS-based project. Happy to talk technology, bulk orders, or partnership.</p>
+        <div class="btn-row" style="margin-top:24px;">
+          <a class="btn btn--outline-light" href="contact.html">Get in touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <div class="footer-brand">
+        <svg class="brand__mark" viewBox="0 0 120 120" aria-hidden="true" style="width:26px;height:26px;">
+          <rect x="0" y="80" width="80" height="40" fill="#1C1C1A"/>
+          <rect x="0" y="0" width="40" height="80" fill="#3D5C35"/>
+          <rect x="40" y="0" width="80" height="40" fill="#C5B89C"/>
+        </svg>
+        <span class="footer-brand__word">RENEWBLOCKS</span>
+      </div>
+      <p style="color:var(--limestone); font-size:14.5px; max-width:32ch;">Partition masonry from waste streams already in Baku.</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Site</p>
+      <a href="index.html">Home</a>
+      <a href="technology.html">Technology</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Location</p>
+      <p>Baku, Azerbaijan — BHOS/SOCAR</p>
+      <p>Pilot: Sumgait, Azerbaijan</p>
+      <p class="footer-col-title" style="margin-top:16px;">Contact</p>
+      <a href="mailto:hello@renewblocks.com">hello@renewblocks.com</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 RenewBlocks</span>
+    <span>BHOS/SOCAR capstone project</span>
+  </div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
 </html>

@@ -8,4 +8,15 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
+  build: {
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        about: 'about.html',
+        contact: 'contact.html',
+        technology: 'technology.html',
+      },
+    },
+  },
 })
+

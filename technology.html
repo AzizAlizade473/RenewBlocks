@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technology — RenewBlocks</title>
+<meta name="description" content="How RenewBlocks is made: sourcing, process, block geometry, and performance data — labeled by what's measured, targeted, or still to be confirmed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Expanded:wght@400;500;700;800;900&family=Archivo:ital,wght@0,400;0,500;0,600;0,700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="RenewBlocks home">
+      <svg class="brand__mark" viewBox="0 0 120 120" aria-hidden="true">
+        <rect x="0" y="80" width="80" height="40" fill="#1C1C1A"/>
+        <rect x="0" y="0" width="40" height="80" fill="#3D5C35"/>
+        <rect x="40" y="0" width="80" height="40" fill="#C5B89C"/>
+      </svg>
+      <span class="brand__word"><b>RENEW</b>BLOCKS</span>
+    </a>
+    <nav class="nav-desktop" aria-label="Primary">
+      <div class="nav-desktop__links">
+        <a class="navlink" href="index.html">Home</a>
+        <a class="navlink" href="technology.html" aria-current="page">Technology</a>
+        <a class="navlink" href="about.html">About</a>
+        <a class="navlink" href="contact.html">Contact</a>
+      </div>
+      <a class="btn btn--outline" href="contact.html">Get in touch</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navMobile" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <nav class="nav-mobile" id="navMobile" aria-label="Primary mobile">
+    <a href="index.html">Home</a>
+    <a href="technology.html" aria-current="page">Technology</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <div class="page-head container">
+    <p class="eyebrow">Technology</p>
+    <h1 class="h1" style="max-width:22ch;">How a block gets made.</h1>
+    <p class="lede" style="margin-top:16px;">From sourcing to curing, plus the performance data — labeled by what's measured, what's a target, and what's still to be confirmed.</p>
+  </div>
+
+  <!-- SOURCING -->
+  <section class="section reveal">
+    <div class="container split">
+      <div>
+        <p class="eyebrow">Sourcing</p>
+        <h2 class="h2">Two delivery routes, no extra trucks.</h2>
+      </div>
+      <div>
+        <p class="body-text">Cement and limestone dust both come from Garadagh and travel together on one truck. Plastic bales and incinerator ash both come from Temiz Sheher's Balakhani site and travel together on a second. Microsilica, CO2 gas, and cellulose pulp are all sourced locally within Sumgait.</p>
+        <p class="body-text" style="margin-top:16px;">The waste-to-energy plant would otherwise pay to landfill the ash it hands us — supplying it to us instead saves that cost, at no charge to us. Plastic arrives as pre-sorted bales; we sort further by resin code and reject anything that isn't clean HDPE or PP.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="section section--panel reveal">
+    <div class="container">
+      <p class="eyebrow">Process</p>
+      <h2 class="h2">Four steps, in order.</h2>
+      <div class="process-list" style="margin-top:var(--s5);">
+        <div class="process-item">
+          <span class="process-item__index">01</span>
+          <div>
+            <p class="process-item__title">Sort &amp; shred</p>
+            <p class="process-item__body">Plastic is dry visual-sorted by resin code — HDPE and PP only, no water tank, since wet plastic throws off the mix — then shredded. Incinerator ash is stockpiled outdoors on a sealed pad for a minimum of eight weeks before use.</p>
+          </div>
+        </div>
+        <div class="process-item">
+          <span class="process-item__index">02</span>
+          <div>
+            <p class="process-item__title">Mix</p>
+            <p class="process-item__body">Sorted plastic, weathered ash, limestone dust, cement, and small amounts of microsilica and cellulose pulp are combined in a pan mixer.</p>
+          </div>
+        </div>
+        <div class="process-item">
+          <span class="process-item__index">03</span>
+          <div>
+            <p class="process-item__title">Press</p>
+            <p class="process-item__body">The mix is pressed into a two-core hollow steel mold at full block scale, 390 × 190 × 190 mm.</p>
+          </div>
+        </div>
+        <div class="process-item">
+          <span class="process-item__index">04</span>
+          <div>
+            <p class="process-item__title">Cure</p>
+            <p class="process-item__body">Instead of curing in water, the pressed block sits in a sealed chamber under CO2 gas for 24 hours. The gas reacts with calcium in the cement and mineralizes into solid calcium carbonate inside the block.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:var(--s5);">
+        <p><strong>Why the ash gets weathered first.</strong> Fresh incinerator ash contains small amounts of metallic aluminum, which reacts with the alkaline cement paste and can crack a block days after pressing. Every batch is weathered outdoors and checked — a visual inspection plus a bubble test — before it's used.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GEOMETRY -->
+  <section class="section reveal">
+    <div class="container hero__grid">
+      <div>
+        <svg class="diagram" viewBox="0 0 460 300" role="img" aria-labelledby="techDwgTitle techDwgDesc" xmlns="http://www.w3.org/2000/svg">
+          <title id="techDwgTitle">RenewBlocks partition block, front face with dimensions</title>
+          <desc id="techDwgDesc">Technical drawing of the block face: 390 by 190 millimeters overall, with two 130 by 120 millimeter through-cores and a minimum 32 millimeter face shell.</desc>
+          <rect x="50" y="46" width="390" height="190" fill="#C5B89C" fill-opacity="0.4" stroke="#1C1C1A" stroke-width="2.5"/>
+          <rect x="93" y="81" width="130" height="120" fill="#F4EFE6" stroke="#1C1C1A" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <rect x="267" y="81" width="130" height="120" fill="#F4EFE6" stroke="#1C1C1A" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <g stroke="#7A7770" stroke-width="1">
+            <line x1="50" y1="256" x2="440" y2="256"/>
+            <line x1="50" y1="250" x2="50" y2="262"/>
+            <line x1="440" y1="250" x2="440" y2="262"/>
+          </g>
+          <text x="245" y="278" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1C1C1A">390 mm</text>
+          <g stroke="#7A7770" stroke-width="1">
+            <line x1="26" y1="46" x2="26" y2="236"/>
+            <line x1="20" y1="46" x2="32" y2="46"/>
+            <line x1="20" y1="236" x2="32" y2="236"/>
+          </g>
+          <text x="26" y="141" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" fill="#1C1C1A" transform="rotate(-90 26 141)">190 mm</text>
+          <line x1="158" y1="81" x2="158" y2="24" stroke="#7A7770" stroke-width="1"/>
+          <text x="158" y="16" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" fill="#3D5C35">130 × 120 mm core, ×2</text>
+          <line x1="71.5" y1="46" x2="71.5" y2="10" stroke="#7A7770" stroke-width="1" stroke-dasharray="3 3"/>
+          <text x="71.5" y="8" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#7A7770">face shell ≥32mm</text>
+        </svg>
+        <p class="diagram-caption">Front face, hollow CMU — to scale</p>
+      </div>
+      <div>
+        <p class="eyebrow">Geometry</p>
+        <h2 class="h2">Why it's hollow.</h2>
+        <p class="body-text" style="margin-top:16px;">Solid, at this density, the block would weigh roughly 25 kg — heavier than the standard stone block it's meant to replace. Two through-cores bring the calculated weight down to about 12.3 kg, roughly a 50% void ratio, while keeping a face shell of at least 32 mm on every wall.</p>
+        <table class="spec-table" style="margin-top:24px;">
+          <tbody>
+            <tr><th scope="row">Gross dimensions</th><td class="value">390 × 190 × 190 mm</td></tr>
+            <tr><th scope="row">Core configuration</th><td class="value">2 through-cores</td></tr>
+            <tr><th scope="row">Core size (each)</th><td class="value">130 × 120 mm</td></tr>
+            <tr><th scope="row">Void ratio</th><td class="value">~50%</td></tr>
+            <tr><th scope="row">Min. face shell</th><td class="value">32 mm</td></tr>
+            <tr><th scope="row">Target weight</th><td class="value">~12.3 kg</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFORMANCE -->
+  <section class="section section--panel reveal">
+    <div class="container">
+      <p class="eyebrow">Performance</p>
+      <h2 class="h2">What's measured, what's a target.</h2>
+      <div class="callout" style="margin-top:20px; margin-bottom:var(--s5);">
+        <p>Lab specimens are 160 × 40 × 40 mm solid blocks. The commercial product is a 390 × 190 × 190 mm hollow block. These are not the same thing, and we test and report them separately.</p>
+      </div>
+      <table class="spec-table">
+        <thead>
+          <tr><th scope="col">Property</th><th scope="col">Status</th><th scope="col">Value</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>7-day compressive strength, lab specimen</td><td><span class="tag tag--measured">Measured</span></td><td class="value">5.1 MPa</td></tr>
+          <tr><td>28-day compressive strength, lab specimen</td><td><span class="tag tag--measured">Measured</span></td><td class="value">9.0 MPa</td></tr>
+          <tr><td>ASTM C129-17 minimum (reference)</td><td><span class="tag tag--reference">Reference</span></td><td class="value">4.14 MPa</td></tr>
+          <tr><td>24h CO2-cure strength, commercial block</td><td><span class="tag tag--target">Target</span></td><td class="value">&gt;5.0 MPa</td></tr>
+          <tr><td>Full-scale hollow block production</td><td><span class="tag tag--target">Planned</span></td><td class="value">Not yet produced</td></tr>
+          <tr><td>Block weight</td><td><span class="tag tag--calculated">Calculated</span></td><td class="value">~12.3 kg</td></tr>
+          <tr><td>Thermal conductivity</td><td><span class="tag tag--calculated">Lit. projection</span></td><td class="value">0.45–0.50 W/mK</td></tr>
+          <tr><td>Fire classification, EN 13501-1 Class B</td><td><span class="tag tag--target">Target</span></td><td class="value">Not yet tested</td></tr>
+          <tr><td>CO2 mineralized, per 10,000 blocks</td><td><span class="tag tag--calculated">Calculated</span></td><td class="value">~3.5 t</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- MECHANISMS -->
+  <section class="section reveal">
+    <div class="container">
+      <p class="eyebrow">How it works</p>
+      <h2 class="h2" style="max-width:26ch;">Five mechanisms, explained plainly.</h2>
+      <div class="grid-2" style="margin-top:var(--s6); row-gap:var(--s5);">
+        <div>
+          <h3 class="h3">Mechanical interlock</h3>
+          <p class="body-text" style="margin-top:8px; font-size:15px;">The angular shape of the shredded plastic gets gripped by the hardened cement around it, similar to how gravel locks into ordinary concrete. Microsilica helps the cement bond more tightly to the plastic surface. <span class="muted mono" style="font-size:12.5px;">Zhang et al., 2023</span></p>
+        </div>
+        <div>
+          <h3 class="h3">CO2 curing</h3>
+          <p class="body-text" style="margin-top:8px; font-size:15px;">Instead of a water cure, the pressed block sits in a CO2 atmosphere. The gas reacts with calcium hydroxide in the cement and mineralizes into solid calcium carbonate — the same mineral limestone is made of. <span class="muted mono" style="font-size:12.5px;">Tu et al., 2018</span></p>
+        </div>
+        <div>
+          <h3 class="h3">Fire behavior</h3>
+          <p class="body-text" style="margin-top:8px; font-size:15px;">The ash is inert and pre-burned at roughly 1,000°C, and the plastic sits encased in a mineral matrix with limited oxygen. We're targeting EN 13501-1 Class B, but haven't tested for it yet.</p>
+        </div>
+        <div>
+          <h3 class="h3">Sound</h3>
+          <p class="body-text" style="margin-top:8px; font-size:15px;">Cement and plastic transmit sound differently, which should reduce how much passes through the wall. This hasn't been measured yet.</p>
+        </div>
+        <div>
+          <h3 class="h3">Self-healing</h3>
+          <p class="body-text" style="margin-top:8px; font-size:15px;">The mix carries more cement than fully reacts during curing. Moisture reaching a small crack later can trigger new mineral growth that seals it — a mechanism documented in published research on similar concretes. We haven't tested it on our own blocks yet. <span class="muted mono" style="font-size:12.5px;">Lahmann et al., 2023</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RULED OUT -->
+  <section class="section section--panel reveal">
+    <div class="container">
+      <p class="eyebrow">What we ruled out</p>
+      <h2 class="h2">Not every waste stream made the cut.</h2>
+      <div class="ruled-list" style="margin-top:var(--s5);">
+        <div class="ruled-list__item">
+          <p class="item-title">LDPE soft film</p>
+          <p class="item-body">Flat, thin flakes that clump together in the mix and don't get coated properly by the cement paste.</p>
+        </div>
+        <div class="ruled-list__item">
+          <p class="item-title">Mixed cable scrap</p>
+          <p class="item-body">Real-world cable scrap usually still carries PVC jacketing, which releases hydrogen chloride gas if it ever burns. Only cleanly stripped insulation would be safe, and we can't verify that without certification.</p>
+        </div>
+        <div class="ruled-list__item">
+          <p class="item-title">Cement kiln dust</p>
+          <p class="item-body">Can carry trace heavy metals and would need leaching tests before use. Left out for now to keep the process simple.</p>
+        </div>
+        <div class="ruled-list__item">
+          <p class="item-title">PVC, in any form</p>
+          <p class="item-body">Not accepted in any feedstock, full stop.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ENVIRONMENTAL -->
+  <section class="section reveal">
+    <div class="container">
+      <p class="eyebrow">Environmental impact</p>
+      <h2 class="h2" style="max-width:24ch;">Per 10,000 blocks, calculated.</h2>
+      <p class="body-text" style="margin-top:16px; color:var(--cement);">Mass-balance figures from the formulation — to be confirmed once we're running at production scale.</p>
+      <div class="stat-grid" style="margin-top:var(--s5);">
+        <div class="stat-card"><span class="tag tag--calculated">Calculated</span><p class="value">~13.3 t</p><p class="desc">Plastic diverted</p></div>
+        <div class="stat-card"><span class="tag tag--calculated">Calculated</span><p class="value">~24.6 t</p><p class="desc">Incinerator ash diverted</p></div>
+        <div class="stat-card"><span class="tag tag--calculated">Calculated</span><p class="value">~47.9 t</p><p class="desc">Limestone dust diverted</p></div>
+        <div class="stat-card"><span class="tag tag--calculated">Calculated</span><p class="value">~3.5 t</p><p class="desc">CO2 mineralized (stoichiometric estimate)</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section--dark section reveal">
+    <div class="container split">
+      <div><h2 class="h2">Questions about the chemistry or the specs?</h2></div>
+      <div>
+        <p class="lede">We're happy to go deeper on any of this — formula direction, testing plans, or standards we're working toward.</p>
+        <div class="btn-row" style="margin-top:24px;">
+          <a class="btn btn--outline-light" href="contact.html">Get in touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-top">
+    <div>
+      <div class="footer-brand">
+        <svg class="brand__mark" viewBox="0 0 120 120" aria-hidden="true" style="width:26px;height:26px;">
+          <rect x="0" y="80" width="80" height="40" fill="#1C1C1A"/>
+          <rect x="0" y="0" width="40" height="80" fill="#3D5C35"/>
+          <rect x="40" y="0" width="80" height="40" fill="#C5B89C"/>
+        </svg>
+        <span class="footer-brand__word">RENEWBLOCKS</span>
+      </div>
+      <p style="color:var(--limestone); font-size:14.5px; max-width:32ch;">Partition masonry from waste streams already in Baku.</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Site</p>
+      <a href="index.html">Home</a>
+      <a href="technology.html">Technology</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="footer-col">
+      <p class="footer-col-title">Location</p>
+      <p>Baku, Azerbaijan — BHOS/SOCAR</p>
+      <p>Pilot: Sumgait, Azerbaijan</p>
+      <p class="footer-col-title" style="margin-top:16px;">Contact</p>
+      <a href="mailto:hello@renewblocks.com">hello@renewblocks.com</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 RenewBlocks</span>
+    <span>BHOS/SOCAR capstone project</span>
+  </div>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
